@@ -5,9 +5,19 @@ import 'package:contacts/contacts_listing/ui/search_bar.dart';
 import 'package:contacts/general/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:rebloc/rebloc.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-class ContactsScreen extends StatelessWidget {
+import 'contact_listing_actions.dart';
+
+class ContactsScreen extends StatefulWidget {
+  @override
+  _ContactsScreenState createState() => _ContactsScreenState();
+}
+
+class _ContactsScreenState extends State<ContactsScreen> {
   final contactsScrollController = ScrollController();
+
+  final ItemScrollController itemScrollController = ItemScrollController();
 
   final searchController = TextEditingController();
 
@@ -16,11 +26,26 @@ class ContactsScreen extends StatelessWidget {
   final double _bottomSheetHeight = 100;
 
   @override
+  void initState() {
+    super.initState();
+    //TODO look for better decision
+    Future.delayed(Duration.zero, () {
+      StoreProvider.of<AppState>(context).states.stream.listen((event) {
+        final invalidIndex = -1;
+        final destinationIndex = event.contactListingState.jumpTo;
+        if (destinationIndex != invalidIndex) {
+          itemScrollController.scrollTo(index: destinationIndex, duration: Duration(seconds: 1));
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _display('Contacts'),
-      body: _buildScreenBody(),
-      bottomSheet: _buildPersistentBottomSheet(),
+      body: _buildScreenBody(context),
+      bottomSheet: _buildPersistentBottomSheet(context),
     );
   }
 
@@ -31,14 +56,14 @@ class ContactsScreen extends StatelessWidget {
     );
   }
 
-  SafeArea _buildScreenBody() {
+  SafeArea _buildScreenBody(BuildContext context) {
     return SafeArea(
       child: Padding(
         /// https://github.com/flutter/flutter/issues/50314
         padding: EdgeInsets.only(bottom: _bottomSheetHeight),
         child: Column(
           children: [
-            _buildSearchBar(),
+            _buildSearchBar(context),
             _buildContactList(),
           ],
         ),
@@ -46,7 +71,7 @@ class ContactsScreen extends StatelessWidget {
     );
   }
 
-  Padding _buildSearchBar() {
+  Padding _buildSearchBar(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
         left: 16,
@@ -57,7 +82,9 @@ class ContactsScreen extends StatelessWidget {
         controller: searchController,
         focusNode: searchFocusNode,
         hintText: 'Search people',
-        onSearchPressedCallback: (query) {},
+        onSearchPressedCallback: (query) {
+          StoreProvider.of<AppState>(context).dispatch(SearchContactAction(query: query));
+        },
       ),
     );
   }
@@ -69,21 +96,24 @@ class ContactsScreen extends StatelessWidget {
         builder: (context, dispatcher, contactsViewModel) {
           return ContactList(
             contactsViewModel,
-            contactsScrollController,
+            itemScrollController,
           );
         },
       ),
     );
   }
 
-  PersistentBottomSheet _buildPersistentBottomSheet() {
+  PersistentBottomSheet _buildPersistentBottomSheet(BuildContext context) {
     return PersistentBottomSheet(
       height: _bottomSheetHeight,
       onCancelSearchPressedCallback: () {
         searchController.clear();
+        StoreProvider.of<AppState>(context).dispatch(TryGetContactsAction());
       },
       onHighlightPressedCallback: () {
-        //TODO The floating action button should highlight the contact matching the name in blue and scroll to it.
+        searchFocusNode.unfocus();
+
+        StoreProvider.of<AppState>(context).dispatch(HighlightContactByQueryAction(query: searchController.text));
       },
     );
   }

@@ -20,3 +20,21 @@ class ContactsLoadingStateAction extends Action {
 
   ContactsLoadingStateAction({this.isLoading});
 }
+
+class SearchContactAction extends Action {
+  final String query;
+
+  SearchContactAction({this.query});
+}
+
+class HighlightContactByQueryAction extends Action {
+  final String query;
+
+  HighlightContactByQueryAction({this.query});
+}
+
+class JumpToContactIndexAction extends Action {
+  final int index;
+
+  JumpToContactIndexAction({this.index});
+}

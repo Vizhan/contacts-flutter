@@ -16,6 +16,7 @@ dependencies:
       url: https://github.com/Vizhan/flutter_contacts_plugin
   intl: ^0.16.0
   permission_handler: ^5.0.1+1
+  scrollable_positioned_list: ^0.1.8
 
 dev_dependencies:
   flutter_test:

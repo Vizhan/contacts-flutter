@@ -15,6 +15,12 @@ class ContactListingBloc extends SimpleBloc<AppState> {
       case TryGetContactsAction:
         _getContactsFromDevice(dispatcher, state);
         break;
+      case SearchContactAction:
+        _filterContacts(dispatcher, state, action as SearchContactAction);
+        break;
+      case HighlightContactByQueryAction:
+        _showFirstMatch(dispatcher, state, action as HighlightContactByQueryAction);
+        break;
     }
     return action;
   }
@@ -26,6 +32,7 @@ class ContactListingBloc extends SimpleBloc<AppState> {
         return state.copyWith(
           contactListingState: state.contactListingState.copyWith(
             contacts: (action as OnGotContactsAction).contacts,
+            jumpTo: 0,
           ),
         );
         break;
@@ -43,9 +50,28 @@ class ContactListingBloc extends SimpleBloc<AppState> {
           ),
         );
         break;
+      case JumpToContactIndexAction:
+        return state.copyWith(
+          contactListingState: state.contactListingState.copyWith(
+            jumpTo: (action as JumpToContactIndexAction).index,
+          ),
+        );
+        break;
       default:
         return state;
     }
+  }
+
+  @override
+  FutureOr<Action> afterware(dispatcher, AppState state, Action action) {
+    switch (action.runtimeType) {
+      case JumpToContactIndexAction:
+        if ((action as JumpToContactIndexAction).index != -1) {
+          dispatcher(JumpToContactIndexAction(index: -1));
+        }
+        break;
+    }
+    return action;
   }
 
   void _getContactsFromDevice(DispatchFunction dispatcher, AppState state) async {
@@ -60,5 +86,29 @@ class ContactListingBloc extends SimpleBloc<AppState> {
     } else {
       dispatcher(ChangeContactsPermissionStatusAction(isGranted: false));
     }
+  }
+
+  void _filterContacts(DispatchFunction dispatcher, AppState state, SearchContactAction action) async {
+    if (action.query.isEmpty) {
+      dispatcher(TryGetContactsAction());
+      return;
+    }
+
+    final contacts = state.contactListingState.contacts;
+    final filteredContacts = contacts.where((element) => element.displayName.toLowerCase().contains(action.query.toLowerCase()));
+    dispatcher(OnGotContactsAction(filteredContacts.toList()));
+  }
+
+  void _showFirstMatch(DispatchFunction dispatcher, AppState state, HighlightContactByQueryAction action) async {
+    final contacts = state.contactListingState.contacts;
+    final firstMatchedContact =
+        contacts.firstWhere((element) => element.displayName.toLowerCase().contains(action.query.toLowerCase()), orElse: null);
+
+    int firstMatchedContactIndex = -1;
+    if (firstMatchedContact != null) {
+      firstMatchedContactIndex = contacts.indexOf(firstMatchedContact);
+    }
+
+    dispatcher(JumpToContactIndexAction(index: firstMatchedContactIndex));
   }
 }
