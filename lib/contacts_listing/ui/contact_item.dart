@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:contacts/contacts_listing/ui/contact_avatar.dart';
 import 'package:flutter/material.dart';
 
 class ContactItem extends StatelessWidget {
@@ -13,16 +14,12 @@ class ContactItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final avatar = imageBytes.isNotEmpty ? Image.memory(imageBytes) : Container();
     return Row(
       mainAxisSize: MainAxisSize.max,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: CircleAvatar(
-            child: avatar,
-            backgroundImage: null,
-          ),
+        ContactAvatar(
+          imageBytes: imageBytes,
+          radius: 20,
         ),
         const SizedBox(width: 8),
         Expanded(
