@@ -32,7 +32,7 @@ class AppThemeProvider {
         textTheme: TextTheme(
           headline6: TextStyle(
             color: Colors.black,
-            fontSize: 32,
+            fontSize: 40,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -54,6 +54,8 @@ class AppThemeProvider {
       ///////////////////////////////////////////////
       inputDecorationTheme: InputDecorationTheme(
         contentPadding: EdgeInsets.all(16.0),
+        fillColor: Colors.grey[250],
+        filled: true,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
             color: Colors.indigo,
