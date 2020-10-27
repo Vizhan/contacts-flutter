@@ -11,9 +11,6 @@ class ContactListingBloc extends SimpleBloc<AppState> {
   @override
   FutureOr<Action> middleware(DispatchFunction dispatcher, AppState state, Action action) {
     switch (action.runtimeType) {
-      case InitialAction:
-        //TODO
-        break;
       case TryGetContactsAction:
         _getContactsFromDevice(dispatcher, state);
         break;
