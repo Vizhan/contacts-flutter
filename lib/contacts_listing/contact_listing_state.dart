@@ -1,5 +1,8 @@
+
+import 'package:flutter_contacts_plugin/contact_model.dart';
+
 class ContactListingState {
-  final List<String> contacts;
+  final List<Contact> contacts;
 
   ContactListingState({
     this.contacts,
@@ -10,7 +13,7 @@ class ContactListingState {
       );
 
   ContactListingState copyWith({
-    List<String> contacts,
+    List<Contact> contacts,
   }) {
     return ContactListingState(
       contacts: contacts ?? this.contacts,

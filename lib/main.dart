@@ -24,7 +24,7 @@ void main() {
     ),
   );
 
-  store.dispatch(InitialAction());
+  store.dispatch(TryGetContactsAction());
 }
 
 class ContactsApplication extends StatelessWidget {

@@ -1,3 +1,10 @@
+import 'package:flutter_contacts_plugin/contact_model.dart';
 import 'package:rebloc/rebloc.dart';
 
-class InitialAction extends Action {}
+class TryGetContactsAction extends Action {}
+
+class OnGotContactsAction extends Action {
+  final List<Contact> contacts;
+
+  OnGotContactsAction(this.contacts);
+}
