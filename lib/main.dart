@@ -5,6 +5,7 @@ import 'package:rebloc/rebloc.dart';
 
 import 'contacts_listing/contact_listing_screen.dart';
 import 'general/app_state.dart';
+import 'general/theme/app_theme_provider.dart';
 
 void main() {
   final store = Store<AppState>(
@@ -30,10 +31,7 @@ class ContactsApplication extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Contacts',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      theme: AppThemeProvider.get(),
       home: ContactsScreen(),
     );
   }
