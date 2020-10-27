@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class PersistentBottomSheet extends StatelessWidget {
   final VoidCallback onCancelSearchPressedCallback;
   final VoidCallback onHighlightPressedCallback;
+  final double height;
 
   PersistentBottomSheet({
     @required this.onCancelSearchPressedCallback,
     @required this.onHighlightPressedCallback,
+    @required this.height,
   });
 
   @override
@@ -16,7 +18,7 @@ class PersistentBottomSheet extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16),
       width: double.infinity,
-      height: 100,
+      height: height,
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(
