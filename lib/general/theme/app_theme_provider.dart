@@ -22,19 +22,26 @@ class AppThemeProvider {
       scaffoldBackgroundColor: light_grey,
       fontFamily: app_font_family,
       cursorColor: Colors.indigo,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
       cupertinoOverrideTheme: CupertinoThemeData(
         primaryColor: Colors.indigo,
       ),
-      visualDensity: VisualDensity.adaptivePlatformDensity,
+      appBarTheme: AppBarTheme(
+        color: light_grey,
+        elevation: 0,
+        textTheme: TextTheme(
+          headline6: TextStyle(
+            color: Colors.black,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       ///////////////////////////////////////////////
       /////////////////Font Style////////////////////
       ///////////////////////////////////////////////
+
       textTheme: TextTheme(
-        headline6: basicTextStyle.copyWith(
-          color: Colors.black,
-          fontSize: 32,
-          fontWeight: FontWeight.bold,
-        ),
         bodyText1: basicTextStyle.copyWith(
           color: Colors.black,
           fontSize: 24,
