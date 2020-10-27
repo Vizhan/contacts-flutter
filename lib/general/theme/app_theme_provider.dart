@@ -18,8 +18,8 @@ class AppThemeProvider {
     return ThemeData(
       accentColor: dark_red,
       primaryColor: Colors.indigo,
-      backgroundColor: light_grey,
-      scaffoldBackgroundColor: light_grey,
+      backgroundColor: Colors.white,
+      scaffoldBackgroundColor: Colors.white,
       fontFamily: app_font_family,
       cursorColor: Colors.indigo,
       visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -27,7 +27,7 @@ class AppThemeProvider {
         primaryColor: Colors.indigo,
       ),
       appBarTheme: AppBarTheme(
-        color: light_grey,
+        color: Colors.white,
         elevation: 0,
         textTheme: TextTheme(
           headline6: TextStyle(
@@ -40,7 +40,6 @@ class AppThemeProvider {
       ///////////////////////////////////////////////
       /////////////////Font Style////////////////////
       ///////////////////////////////////////////////
-
       textTheme: TextTheme(
         bodyText1: basicTextStyle.copyWith(
           color: Colors.black,
@@ -54,7 +53,7 @@ class AppThemeProvider {
       ///////////////////////////////////////////////
       inputDecorationTheme: InputDecorationTheme(
         contentPadding: EdgeInsets.all(16.0),
-        fillColor: Colors.grey[250],
+        fillColor: Colors.grey[100],
         filled: true,
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -85,6 +84,28 @@ class AppThemeProvider {
           ),
         ),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        backgroundColor: Colors.white,
+      ),
+      ///////////////////////////////////////////////
+      /////////////////Button style//////////////////
+      ///////////////////////////////////////////////
+      buttonTheme: ButtonThemeData(
+        height: 64,
+        buttonColor: Colors.indigo,
+        textTheme: ButtonTextTheme.primary,
+        colorScheme: ColorScheme.light().copyWith(
+          primary: Colors.grey[700]
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(32.0),
+          ),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: Colors.indigo,
+      )
     );
   }
 }
