@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ContactAvatar extends StatelessWidget {
   final Uint8List imageBytes;
@@ -13,16 +14,19 @@ class ContactAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final avatar = imageBytes.isNotEmpty
+        ? FadeInImage(
+            fit: BoxFit.fill,
+            placeholder: AssetImage('assets/ic_user.png'),
+            image: MemoryImage(imageBytes),
+          )
+        : Image.asset('assets/ic_user.png');
     return Container(
       width: radius * 2,
       height: radius * 2,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: FadeInImage(
-          fit: BoxFit.fill,
-          placeholder: AssetImage('assets/ic_user.png'),
-          image: MemoryImage(imageBytes),
-        ),
+        child: avatar,
       ),
     );
   }

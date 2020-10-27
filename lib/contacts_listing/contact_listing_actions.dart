@@ -8,3 +8,15 @@ class OnGotContactsAction extends Action {
 
   OnGotContactsAction(this.contacts);
 }
+
+class ChangeContactsPermissionStatusAction extends Action {
+  final bool isGranted;
+
+  ChangeContactsPermissionStatusAction({this.isGranted});
+}
+
+class ContactsLoadingStateAction extends Action {
+  final bool isLoading;
+
+  ContactsLoadingStateAction({this.isLoading});
+}
