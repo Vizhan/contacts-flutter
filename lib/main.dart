@@ -5,12 +5,14 @@ import 'package:rebloc/rebloc.dart';
 
 import 'contacts_listing/contact_listing_screen.dart';
 import 'general/app_state.dart';
+import 'general/bloc/logger_bloc.dart';
 import 'general/theme/app_theme_provider.dart';
 
 void main() {
   final store = Store<AppState>(
     initialState: AppState.initialState(),
     blocs: [
+      LoggerBloc(),
       ContactListingBloc(),
     ],
   );
