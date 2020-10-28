@@ -1,7 +1,8 @@
+import 'package:contacts/contacts_listing/model/highlighted_contact.dart';
 import 'package:flutter_contacts_plugin/contact_model.dart';
 
 class ContactListingState {
-  final List<Contact> contacts;
+  final List<HighlightedContact> contacts;
   final bool isLoading;
   final bool isUserPermissionGranted;
   final int jumpTo;
@@ -21,7 +22,7 @@ class ContactListingState {
       );
 
   ContactListingState copyWith({
-    List<Contact> contacts,
+    List<HighlightedContact> contacts,
     bool isLoading,
     bool isUserPermissionGranted,
     int jumpTo,

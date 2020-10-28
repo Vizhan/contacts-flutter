@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:contacts/contacts_listing/model/highlighted_contact.dart';
 import 'package:contacts/general/app_state.dart';
 import 'package:flutter_contacts_plugin/contact_model.dart';
 import 'package:flutter_contacts_plugin/flutter_contacts_plugin.dart';
@@ -32,7 +33,6 @@ class ContactListingBloc extends SimpleBloc<AppState> {
         return state.copyWith(
           contactListingState: state.contactListingState.copyWith(
             contacts: (action as OnGotContactsAction).contacts,
-            jumpTo: 0,
           ),
         );
         break;
@@ -80,9 +80,10 @@ class ContactListingBloc extends SimpleBloc<AppState> {
       dispatcher(ContactsLoadingStateAction(isLoading: true));
 
       Iterable<Contact> contacts = await FlutterContactsPlugin.contacts;
+      final List<HighlightedContact> hightlightedContacts = contacts.map((e) => HighlightedContact(contact: e)).toList();
 
       dispatcher(ContactsLoadingStateAction(isLoading: false));
-      dispatcher(OnGotContactsAction(contacts.toList()));
+      dispatcher(OnGotContactsAction(hightlightedContacts));
     } else {
       dispatcher(ChangeContactsPermissionStatusAction(isGranted: false));
     }
@@ -95,14 +96,25 @@ class ContactListingBloc extends SimpleBloc<AppState> {
     }
 
     final contacts = state.contactListingState.contacts;
-    final filteredContacts = contacts.where((element) => element.displayName.toLowerCase().contains(action.query.toLowerCase()));
+    final filteredContacts = contacts.where((element) => element.contact.displayName.toLowerCase().contains(action.query.toLowerCase()));
     dispatcher(OnGotContactsAction(filteredContacts.toList()));
   }
 
   void _showFirstMatch(DispatchFunction dispatcher, AppState state, HighlightContactByQueryAction action) async {
     final contacts = state.contactListingState.contacts;
+
+    if (action.query.isNotEmpty) {
+      final highlightedContacts = contacts.map((e) {
+        e.isHighlighted = e.contact.displayName.toLowerCase().contains(action.query.toLowerCase());
+        return e;
+      }).toList();
+      dispatcher(OnGotContactsAction(highlightedContacts));
+    }
+
     final firstMatchedContact =
-        contacts.firstWhere((element) => element.displayName.toLowerCase().contains(action.query.toLowerCase()), orElse: null);
+        contacts.firstWhere((element) => element.contact.displayName.toLowerCase().contains(action.query.toLowerCase()), orElse: () {
+      return null;
+    });
 
     int firstMatchedContactIndex = -1;
     if (firstMatchedContact != null) {

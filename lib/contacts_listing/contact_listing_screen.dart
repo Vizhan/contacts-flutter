@@ -5,7 +5,6 @@ import 'package:contacts/contacts_listing/ui/search_bar.dart';
 import 'package:contacts/general/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:rebloc/rebloc.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'contact_listing_actions.dart';
 
@@ -17,24 +16,24 @@ class ContactsScreen extends StatefulWidget {
 class _ContactsScreenState extends State<ContactsScreen> {
   final contactsScrollController = ScrollController();
 
-  final ItemScrollController itemScrollController = ItemScrollController();
-
   final searchController = TextEditingController();
 
   final searchFocusNode = FocusNode();
 
   final double _bottomSheetHeight = 100;
+  final double _persistentItemHeight = 48;
 
   @override
   void initState() {
     super.initState();
-    //TODO look for better decision
+    //TODO look for better solution
     Future.delayed(Duration.zero, () {
       StoreProvider.of<AppState>(context).states.stream.listen((event) {
         final invalidIndex = -1;
         final destinationIndex = event.contactListingState.jumpTo;
-        if (destinationIndex != invalidIndex) {
-          itemScrollController.scrollTo(index: destinationIndex, duration: Duration(seconds: 1));
+        if (destinationIndex != invalidIndex && contactsScrollController.hasClients) {
+          contactsScrollController?.animateTo(_persistentItemHeight * destinationIndex.toDouble(),
+              duration: Duration(seconds: 1), curve: Curves.linear);
         }
       });
     });
@@ -96,7 +95,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
         builder: (context, dispatcher, contactsViewModel) {
           return ContactList(
             contactsViewModel,
-            itemScrollController,
+            contactsScrollController,
           );
         },
       ),
@@ -112,7 +111,6 @@ class _ContactsScreenState extends State<ContactsScreen> {
       },
       onHighlightPressedCallback: () {
         searchFocusNode.unfocus();
-
         StoreProvider.of<AppState>(context).dispatch(HighlightContactByQueryAction(query: searchController.text));
       },
     );

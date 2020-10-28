@@ -1,17 +1,15 @@
 import 'package:contacts/contacts_listing/contact_listing_state.dart';
 import 'package:flutter/material.dart';
-import 'package:contacts/general/util/string_extension.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'contact_item.dart';
 
 class ContactList extends StatelessWidget {
   final ContactListingState contactsViewModel;
-  final ItemScrollController itemScrollController;
+  final ScrollController scrollController;
 
   ContactList(
     this.contactsViewModel,
-    this.itemScrollController,
+    this.scrollController,
   );
 
   @override
@@ -25,17 +23,19 @@ class ContactList extends StatelessWidget {
     }
 
     if (contactsViewModel.contacts.isNotEmpty) {
-      return ScrollablePositionedList.separated(
-        itemScrollController: itemScrollController,
-        itemCount: contactsViewModel.contacts.length,
-        padding: EdgeInsets.all(16),
-        separatorBuilder: (context, index) => const SizedBox(height: 8),
-        itemBuilder: (context, index) {
-          return ContactItem(
-            name: contactsViewModel.contacts[index].displayName.orDefault('no name'),
-            imageBytes: contactsViewModel.contacts[index].avatar,
-          );
-        },
+      return Scrollbar(
+        radius: Radius.circular(16),
+        child: ListView.separated(
+          controller: scrollController,
+          itemCount: contactsViewModel.contacts.length,
+          padding: EdgeInsets.all(16),
+          separatorBuilder: (context, index) => const SizedBox(height: 8),
+          itemBuilder: (context, index) {
+            return ContactItem(
+              contact: contactsViewModel.contacts[index],
+            );
+          },
+        ),
       );
     }
 
