@@ -1,4 +1,5 @@
 import 'package:contacts/contacts_listing/contact_listing_state.dart';
+import 'package:contacts/contacts_listing/ui/clear_focus_container.dart';
 import 'package:contacts/contacts_listing/ui/contacts_list.dart';
 import 'package:contacts/contacts_listing/ui/persistent_bottom_sheet.dart';
 import 'package:contacts/contacts_listing/ui/search_bar.dart';
@@ -47,10 +48,12 @@ class _ContactsScreenState extends State<ContactsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _display("Contacts"),
-      body: _buildScreenBody(context),
-      bottomSheet: _buildPersistentBottomSheet(context),
+    return ClearFocusContainer(
+      child: Scaffold(
+        appBar: _display("Contacts"),
+        body: _buildScreenBody(context),
+        bottomSheet: _buildPersistentBottomSheet(context),
+      ),
     );
   }
 
