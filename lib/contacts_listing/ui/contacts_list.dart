@@ -41,7 +41,7 @@ class ContactList extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           Text(
-            'Please, allow access to contacts in the application settings.',
+            'Please, allow access to contacts in the application settings, then restart the application.',
             textAlign: TextAlign.center,
           ),
         ],
