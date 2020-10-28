@@ -16,11 +16,11 @@ class ContactListingBloc extends SimpleBloc<AppState> {
       case TryGetContactsAction:
         _getContactsFromDevice(dispatcher, state);
         break;
-      case SearchContactAction:
-        _filterContacts(dispatcher, state, action as SearchContactAction);
+      case FilterContactAction:
+        _filterContacts(dispatcher, state, action as FilterContactAction);
         break;
-      case HighlightContactByQueryAction:
-        _showFirstMatch(dispatcher, state, action as HighlightContactByQueryAction);
+      case SearchContactAction:
+        _showFirstMatch(dispatcher, state, action as SearchContactAction);
         break;
     }
     return action;
@@ -74,33 +74,32 @@ class ContactListingBloc extends SimpleBloc<AppState> {
     return action;
   }
 
-  void _getContactsFromDevice(DispatchFunction dispatcher, AppState state) async {
+  Future<List<HighlightedContact>> _getContactsFromDevice(DispatchFunction dispatcher, AppState state) async {
+    Iterable<HighlightedContact> hightlightedContacts = [];
     if (await Permission.contacts.request().isGranted) {
       dispatcher(ChangeContactsPermissionStatusAction(isGranted: true));
       dispatcher(ContactsLoadingStateAction(isLoading: true));
 
       Iterable<Contact> contacts = await FlutterContactsPlugin.contacts;
-      final List<HighlightedContact> hightlightedContacts = contacts.map((e) => HighlightedContact(contact: e)).toList();
+      hightlightedContacts = contacts.map((e) => HighlightedContact(contact: e)).toList();
 
       dispatcher(ContactsLoadingStateAction(isLoading: false));
       dispatcher(OnGotContactsAction(hightlightedContacts));
     } else {
       dispatcher(ChangeContactsPermissionStatusAction(isGranted: false));
     }
+
+    return Future.value(hightlightedContacts.toList());
   }
 
-  void _filterContacts(DispatchFunction dispatcher, AppState state, SearchContactAction action) async {
-    if (action.query.isEmpty) {
-      dispatcher(TryGetContactsAction());
-      return;
-    }
+  void _filterContacts(DispatchFunction dispatcher, AppState state, FilterContactAction action) async {
+    final contacts = await _getContactsFromDevice(dispatcher, state);
 
-    final contacts = state.contactListingState.contacts;
     final filteredContacts = contacts.where((element) => element.contact.displayName.toLowerCase().contains(action.query.toLowerCase()));
     dispatcher(OnGotContactsAction(filteredContacts.toList()));
   }
 
-  void _showFirstMatch(DispatchFunction dispatcher, AppState state, HighlightContactByQueryAction action) async {
+  void _showFirstMatch(DispatchFunction dispatcher, AppState state, SearchContactAction action) async {
     final contacts = state.contactListingState.contacts;
 
     if (action.query.isNotEmpty) {

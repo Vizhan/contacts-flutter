@@ -96,7 +96,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
               focusNode: searchFocusNode,
               hintText: "Search people",
               onSearchPressedCallback: (query) {
-                StoreProvider.of<AppState>(context).dispatch(SearchContactAction(query: query));
+                StoreProvider.of<AppState>(context).dispatch(FilterContactAction(query: query));
               },
             ),
           ),
@@ -157,7 +157,7 @@ class _ContactsScreenState extends State<ContactsScreen> {
       },
       onHighlightPressedCallback: () {
         searchFocusNode.unfocus();
-        StoreProvider.of<AppState>(context).dispatch(HighlightContactByQueryAction(query: searchController.text));
+        StoreProvider.of<AppState>(context).dispatch(SearchContactAction(query: searchController.text));
       },
     );
   }
